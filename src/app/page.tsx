@@ -16,7 +16,7 @@ export default function HomePage() {
         const response = await apiClient.get('/movie/popular');
         setMovies(response.data.results);
       } catch (error) {
-        console.error('Error fetching movies:', error);
+        // console.error('Error fetching movies:', error);
       }
     };
 
