@@ -1,46 +1,59 @@
-import { Movie } from '@/types/types';
-import { Heart, Star } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
+import { Heart } from 'lucide-react';
+import { Movie } from '@/types/types';
 
-interface MovieCardProps {
-  movie: Movie;
-  isFavorite: boolean;
-  toggleFavorite: (movie: Movie) => void;
+interface Movie {
+  id: number;
+  title: string;
+  poster_path: string;
+  release_date: string;
+  vote_average: number;
 }
 
-const MovieCard: React.FC<MovieCardProps> = ({ movie, isFavorite, toggleFavorite }) => {
+interface MovieCardProps {
+    movie: Movie; // Use the consistent Movie type
+    onToggleFavorite: (movie: Movie) => void; // Pass the full Movie object
+    isFavorite: boolean;
+  }
+
+export default function MovieCard({ movie, onToggleFavorite, isFavorite }: MovieCardProps) {
   return (
-    <div className="relative group bg-gray-800 rounded-lg overflow-hidden shadow-lg transform transition-all hover:scale-105">
-      {/* Link to Movie Details */}
-      <Link href={`/movies/${movie.id}`} passHref>
-        <img
-          src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
-          alt={movie.title}
-          className="w-full h-72 object-cover"
-        />
+    <div className="relative group bg-gray-800 rounded-lg overflow-hidden shadow-lg">
+      <Link href={`/movies/${movie.id}`}>
+        <div className="relative aspect-[2/3]">
+          <Image
+            src={`https://image.tmdb.org/t/p/w500${movie.poster_path}`}
+            alt={movie.title}
+            fill
+            className="object-cover transition-transform group-hover:scale-105"
+            sizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
+          />
+        </div>
       </Link>
+
       <button
-        onClick={() => toggleFavorite(movie)}
-        className="absolute top-2 right-2 z-10"
+        onClick={(e) => {
+          e.preventDefault(); // Prevents navigation when clicking the button
+          onToggleFavorite(movie); // Pass the movie object
+        }}
+        className="absolute top-2 right-2 z-10 p-2 hover:scale-110 transition-transform"
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
       >
         <Heart
+          className="transition-colors"
           color={isFavorite ? 'red' : 'white'}
-          fill={isFavorite ? 'red' : 'transparent'}
-          className="hover:scale-110 transition-all"
+          fill={isFavorite ? 'red' : 'none'}
         />
       </button>
-      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 p-3 text-white">
-        <h3 className="font-bold text-lg truncate">{movie.title}</h3>
-        <div className="flex justify-between items-center">
+
+      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent p-4">
+        <h3 className="font-bold text-lg text-white truncate">{movie.title}</h3>
+        <div className="flex justify-between items-center text-gray-300 text-sm">
           <span>{new Date(movie.release_date).getFullYear()}</span>
-          <div className="flex items-center">
-            <Star size={16} fill="yellow" color="yellow" className="mr-1" />
-            {movie.vote_average.toFixed(1)}
-          </div>
+          <span>⭐ {movie.vote_average.toFixed(1)}</span>
         </div>
       </div>
     </div>
   );
-};
-
-export default MovieCard;
+}

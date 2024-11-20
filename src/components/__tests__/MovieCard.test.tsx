@@ -20,7 +20,7 @@ describe('MovieCard Component', () => {
       <MovieCard
         movie={mockMovie}
         isFavorite={false}
-        toggleFavorite={mockToggleFavorite}
+        onToggleFavorite={mockToggleFavorite}
       />
     );
 
@@ -34,7 +34,7 @@ describe('MovieCard Component', () => {
       <MovieCard
         movie={mockMovie}
         isFavorite={false}
-        toggleFavorite={mockToggleFavorite}
+        onToggleFavorite={mockToggleFavorite}
       />
     );
 

@@ -1,50 +1,49 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import MovieCard from '@/components/MovieCard';
 import { Movie } from '@/types/types';
 import Navbar from '@/components/Navbar';
 
 export default function FavoritesPage() {
   const [favorites, setFavorites] = useState<Movie[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>(''); 
 
   useEffect(() => {
+    // Load favorites from localStorage
     const storedFavorites = JSON.parse(localStorage.getItem('favorites') || '[]');
     setFavorites(storedFavorites);
   }, []);
 
-
-  const removeFavorite = (movie: Movie) => {
-    const updatedFavorites = favorites.filter((fav) => fav.id !== movie.id);
+  const toggleFavorite = (movie: Movie) => {
+    const isFavorite = favorites.some((fav) => fav.id === movie.id);
+  
+    const updatedFavorites = isFavorite
+      ? favorites.filter((fav) => fav.id !== movie.id) // Remove favorite
+      : [...favorites, movie]; // Add favorite
+  
     setFavorites(updatedFavorites);
     localStorage.setItem('favorites', JSON.stringify(updatedFavorites));
   };
-
- 
-  const filteredFavorites = favorites.filter((movie) =>
-    movie.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
   return (
     <div>
-      <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
-      <div className="container mx-auto p-6">
+      <Navbar disableSearchBar={true} />
+      <main className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">Your Favorite Movies</h1>
-        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
-          {filteredFavorites.map((movie) => (
-            <MovieCard
-              key={movie.id}
-              movie={movie}
-              isFavorite={true}
-              toggleFavorite={removeFavorite}
-            />
-          ))}
-        </div>
-        {filteredFavorites.length === 0 && (
-          <p className="text-center text-gray-500">No favorite movies match your search.</p>
+        {favorites.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
+            {favorites.map((movie) => (
+              <MovieCard
+                key={movie.id}
+                movie={movie} 
+                onToggleFavorite={toggleFavorite as (movie: Movie) => void}
+                isFavorite={favorites.some((fav) => fav.id === movie.id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center">No favorite movies yet.</p>
         )}
-      </div>
+      </main>
     </div>
   );
 }
