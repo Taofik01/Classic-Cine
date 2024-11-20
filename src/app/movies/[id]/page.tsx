@@ -3,9 +3,12 @@ import Navbar from '@/components/Navbar';
 import { Genre, Cast, Movie } from '@/types/types';
 
 
+
 interface MovieDetailsProps {
-  params: { id: string };
-}
+    params: { id: string };
+  }
+
+
 
 export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
   const { id } = params;
