@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import Image from "next/image";
+import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import apiClient from "@/utils/apiClient";
 import Navbar from "@/components/Navbar";
 
@@ -22,14 +23,11 @@ interface MovieDetails {
   };
 }
 
-// Update the Props interface to match Next.js expectations
-export interface Params {
-  params: {
-    id: string;
-  };
-}
-
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata({ 
+  params 
+}: { 
+  params: { id: string } 
+}): Promise<Metadata> {
   try {
     const response = await apiClient.get(`/movie/${params.id}`);
     const movie = response.data;
@@ -47,7 +45,11 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   }
 }
 
-export default async function MovieDetailsPage({ params }: Params) {
+export default async function MovieDetailsPage({ 
+  params 
+}: { 
+  params: { id: string } 
+}) {
   try {
     const response = await apiClient.get<MovieDetails>(`/movie/${params.id}`, {
       params: { append_to_response: "credits" },
