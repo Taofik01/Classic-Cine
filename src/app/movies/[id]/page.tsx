@@ -5,7 +5,7 @@ import { Genre, Cast, Movie } from '@/types/types';
 
 
 interface MovieDetailsProps {
-    params: { id: string };
+    params: { id: string }; 
   }
 
 
