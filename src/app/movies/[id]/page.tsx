@@ -1,32 +1,37 @@
 import apiClient from '@/utils/apiClient';
 import Navbar from '@/components/Navbar';
-import { Genre, Cast, Movie } from '@/types/types';
 
 
+export async function generateMetadata({ params }: { params: { id: string } }) {
+  try {
+    const response = await apiClient.get(`/movie/${params.id}`);
+    const movie = response.data;
 
-interface MovieDetailsProps {
-    params: { id: string }; 
+    return {
+      title: `${movie.title} - Movie Details`,
+      description: movie.overview,
+    };
+  } catch (error) {
+    console.error("Error generating metadata:", error);
+    return {
+      title: "Movie Not Found",
+      description: "Could not retrieve movie details.",
+    };
   }
+}
 
+export default async function MovieDetailsPage({ params }: { params: { id: string } }) {
+  try {
+   
+    const response = await apiClient.get(`/movie/${params.id}`, {
+      params: { append_to_response: 'credits' },
+    });
 
+    const movie = response.data;
 
-export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
-  const { id } = params;
- 
-
-
-
-
-  const response = await apiClient.get<Movie & { credits: { cast: Cast[] } }>(`/movie/${id}`, {
-    params: { append_to_response: 'credits' },
-  });
-
-  const movie = response.data;
-
-  return (
-    <div>
-     
-      <Navbar disableSearchBar={true}   />
+    return (
+        <div>
+            <Navbar disableSearchBar={true}  />
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-4">{movie.title}</h1>
         <div className="flex flex-col md:flex-row gap-6">
@@ -42,16 +47,15 @@ export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
 
             {/* Genres */}
             <div className="mb-4">
-              <strong>Genres:</strong>{' '}
-              {movie.genres.map((genre: Genre) => genre.name).join(', ')}
+              <strong>Genres:</strong> {movie.genres.map((g: { id: number; name: string }) => g.name).join(", ")}
             </div>
 
-            {/* Cast (optional) */}
+            {/* Cast */}
             {movie.credits?.cast && (
               <div>
                 <strong>Cast:</strong>
                 <ul className="list-disc list-inside">
-                  {movie.credits.cast.slice(0, 5).map((cast: Cast) => (
+                  {movie.credits.cast.slice(0, 5).map((cast: { id: number; name: string; character: string }) => (
                     <li key={cast.id}>
                       {cast.name} as {cast.character}
                     </li>
@@ -62,6 +66,10 @@ export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
           </div>
         </div>
       </div>
-    </div>
-  );
+      </div>
+    );
+  } catch (error) {
+    console.error("Error fetching movie details:", error);
+    return <div>Error loading movie details</div>;
+  }
 }
