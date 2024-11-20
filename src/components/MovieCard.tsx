@@ -3,19 +3,11 @@ import Link from 'next/link';
 import { Heart } from 'lucide-react';
 import { Movie } from '@/types/types';
 
-interface Movie {
-  id: number;
-  title: string;
-  poster_path: string;
-  release_date: string;
-  vote_average: number;
-}
-
 interface MovieCardProps {
-    movie: Movie; // Use the consistent Movie type
-    onToggleFavorite: (movie: Movie) => void; // Pass the full Movie object
-    isFavorite: boolean;
-  }
+  movie: Movie;
+  onToggleFavorite: (movie: Movie) => void;
+  isFavorite: boolean;
+}
 
 export default function MovieCard({ movie, onToggleFavorite, isFavorite }: MovieCardProps) {
   return (
@@ -34,8 +26,8 @@ export default function MovieCard({ movie, onToggleFavorite, isFavorite }: Movie
 
       <button
         onClick={(e) => {
-          e.preventDefault(); // Prevents navigation when clicking the button
-          onToggleFavorite(movie); // Pass the movie object
+          e.preventDefault();
+          onToggleFavorite(movie);
         }}
         className="absolute top-2 right-2 z-10 p-2 hover:scale-110 transition-transform"
         aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
