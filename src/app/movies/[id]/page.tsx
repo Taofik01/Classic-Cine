@@ -2,14 +2,18 @@ import apiClient from '@/utils/apiClient';
 import Navbar from '@/components/Navbar';
 import { Genre, Cast, Movie } from '@/types/types';
 
+
 interface MovieDetailsProps {
   params: { id: string };
 }
 
 export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
   const { id } = params;
+ 
 
-  // Fetch movie details and credits
+
+
+
   const response = await apiClient.get<Movie & { credits: { cast: Cast[] } }>(`/movie/${id}`, {
     params: { append_to_response: 'credits' },
   });
@@ -18,8 +22,8 @@ export default async function MovieDetailsPage({ params }: MovieDetailsProps) {
 
   return (
     <div>
-      {/* Navbar with disabled search bar */}
-      <Navbar disableSearchBar={true} />
+     
+      <Navbar disableSearchBar={true}   />
       <div className="container mx-auto p-6">
         <h1 className="text-4xl font-bold mb-4">{movie.title}</h1>
         <div className="flex flex-col md:flex-row gap-6">

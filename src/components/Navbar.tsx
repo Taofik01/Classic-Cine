@@ -4,12 +4,16 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 
 interface NavbarProps {
-  searchTerm: string;
-  setSearchTerm: (term: string) => void;
-  disableSearchBar?: boolean;
+  searchTerm?: string; // Optional
+  setSearchTerm?: (term: string) => void; // Optional
+  disableSearchBar?: boolean; // Optional
 }
 
-const Navbar: React.FC<NavbarProps> = ({ searchTerm, setSearchTerm, disableSearchBar = false }) => (
+const Navbar: React.FC<NavbarProps> = ({
+  searchTerm = '',
+  setSearchTerm = () => {}, // Default no-op
+  disableSearchBar = false,
+}) => (
   <nav className="bg-gray-800 p-4 flex justify-between items-center">
     <div className="flex items-center gap-4">
       <Link href="/" className="text-2xl font-bold text-white">
