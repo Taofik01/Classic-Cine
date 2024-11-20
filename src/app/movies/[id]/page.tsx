@@ -1,10 +1,9 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import { Params } from "next/dist/shared/lib/router/utils/route-matcher";
 import apiClient from "@/utils/apiClient";
 import Navbar from "@/components/Navbar";
 
-// Types
+// Define the MovieDetails type
 interface MovieDetails {
   id: number;
   title: string;
@@ -23,34 +22,38 @@ interface MovieDetails {
   };
 }
 
-export async function generateMetadata({ 
-  params 
-}: { 
-  params: { id: string } 
+// Metadata generation function
+export async function generateMetadata({
+  params,
+}: {
+  params: { id: string };
 }): Promise<Metadata> {
   try {
+    // Fetch movie data to generate metadata
     const response = await apiClient.get(`/movie/${params.id}`);
     const movie = response.data;
 
     return {
       title: `${movie.title} - Movie Details`,
-      description: movie.overview,
+      description: movie.overview || "Movie details and information.",
     };
   } catch (error) {
     console.error("Error generating metadata:", error);
     return {
       title: "Movie Not Found",
-      description: "Could not retrieve movie details.",
+      description: "Unable to retrieve movie details.",
     };
   }
 }
 
-export default async function MovieDetailsPage({ 
-  params 
-}: { 
-  params: { id: string } 
+// Dynamic movie details page
+export default async function MovieDetailsPage({
+  params,
+}: {
+  params: { id: string };
 }) {
   try {
+    // Fetch the movie details
     const response = await apiClient.get<MovieDetails>(`/movie/${params.id}`, {
       params: { append_to_response: "credits" },
     });
@@ -80,9 +83,7 @@ export default async function MovieDetailsPage({
               {/* Overview */}
               <div>
                 <h2 className="text-2xl font-semibold mb-2">Overview</h2>
-                <p className="text-gray-300 leading-relaxed">
-                  {movie.overview}
-                </p>
+                <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
               </div>
 
               {/* Genres */}
@@ -101,13 +102,13 @@ export default async function MovieDetailsPage({
               </div>
 
               {/* Cast */}
-              {movie.credits?.cast && (
+              {movie.credits?.cast && movie.credits.cast.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-semibold mb-2">Top Cast</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {movie.credits.cast.slice(0, 6).map((actor, index) => (
+                    {movie.credits.cast.slice(0, 6).map((actor) => (
                       <div
-                        key={`${actor.id}-${index}`}
+                        key={actor.id}
                         className="bg-gray-800 p-4 rounded-lg flex items-center gap-4"
                       >
                         <div>
@@ -126,7 +127,8 @@ export default async function MovieDetailsPage({
         </div>
       </div>
     );
-  } catch {
+  } catch (error) {
+    console.error("Error fetching movie details:", error);
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
