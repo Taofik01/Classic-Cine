@@ -22,13 +22,14 @@ interface MovieDetails {
   };
 }
 
-interface Props {
+// Update the Props interface to match Next.js expectations
+export interface Params {
   params: {
     id: string;
   };
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: Params): Promise<Metadata> {
   try {
     const response = await apiClient.get(`/movie/${params.id}`);
     const movie = response.data;
@@ -46,7 +47,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-export default async function MovieDetailsPage({ params }: Props) {
+export default async function MovieDetailsPage({ params }: Params) {
   try {
     const response = await apiClient.get<MovieDetails>(`/movie/${params.id}`, {
       params: { append_to_response: "credits" },
@@ -104,7 +105,7 @@ export default async function MovieDetailsPage({ params }: Props) {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {movie.credits.cast.slice(0, 6).map((actor, index) => (
                       <div
-                        key={`${actor.id}-${index}`} // Generate unique keys
+                        key={`${actor.id}-${index}`}
                         className="bg-gray-800 p-4 rounded-lg flex items-center gap-4"
                       >
                         <div>
@@ -124,7 +125,6 @@ export default async function MovieDetailsPage({ params }: Props) {
       </div>
     );
   } catch {
-    // Remove the unused error variable
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
         <div className="text-center">
