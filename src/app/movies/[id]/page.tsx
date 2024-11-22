@@ -22,15 +22,22 @@ interface MovieDetails {
   };
 }
 
+interface PageProps {
+  params: {
+    id: string;
+  };
+  searchParams: { [key: string]: string | string[] | undefined };
+}
+
+// Explicitly define the route as dynamic
+export const dynamic = "force-dynamic";
+
 // Metadata generation function
-export async function generateMetadata({
-  params,
-}: {
-  params: { id: string };
-}): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
   try {
-    // Fetch movie data to generate metadata
-    const response = await apiClient.get(`/movie/${params.id}`);
+    // Await the dynamic `params` object
+    const { id } = await props.params;
+    const response = await apiClient.get(`/movie/${id}`);
     const movie = response.data;
 
     return {
@@ -47,14 +54,11 @@ export async function generateMetadata({
 }
 
 // Dynamic movie details page
-export default async function MovieDetailsPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default async function MovieDetailsPage(props: PageProps) {
   try {
-    // Fetch the movie details
-    const response = await apiClient.get<MovieDetails>(`/movie/${params.id}`, {
+    // Await the dynamic `params` object
+    const { id } = await props.params;
+    const response = await apiClient.get<MovieDetails>(`/movie/${id}`, {
       params: { append_to_response: "credits" },
     });
 
@@ -80,13 +84,10 @@ export default async function MovieDetailsPage({
 
             {/* Movie Details */}
             <div className="w-full md:w-2/3 space-y-6">
-              {/* Overview */}
               <div>
                 <h2 className="text-2xl font-semibold mb-2">Overview</h2>
                 <p className="text-gray-300 leading-relaxed">{movie.overview}</p>
               </div>
-
-              {/* Genres */}
               <div>
                 <h2 className="text-2xl font-semibold mb-2">Genres</h2>
                 <div className="flex flex-wrap gap-2">
@@ -100,8 +101,6 @@ export default async function MovieDetailsPage({
                   ))}
                 </div>
               </div>
-
-              {/* Cast */}
               {movie.credits?.cast && movie.credits.cast.length > 0 && (
                 <div>
                   <h2 className="text-2xl font-semibold mb-2">Top Cast</h2>
