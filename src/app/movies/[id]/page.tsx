@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import Image from "next/image";
+import Image from 'next/image';
 import apiClient from "@/utils/apiClient";
 import Navbar from "@/components/Navbar";
 
@@ -23,9 +23,9 @@ interface MovieDetails {
 }
 
 interface PageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
   searchParams: { [key: string]: string | string[] | undefined };
 }
 
@@ -35,8 +35,7 @@ export const dynamic = "force-dynamic";
 // Metadata generation function
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   try {
-    // Await the dynamic `params` object
-    const { id } = await props.params;
+    const { id } = await props.params; // Await params
     const response = await apiClient.get(`/movie/${id}`);
     const movie = response.data;
 
@@ -53,11 +52,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   }
 }
 
+
 // Dynamic movie details page
 export default async function MovieDetailsPage(props: PageProps) {
   try {
-    // Await the dynamic `params` object
-    const { id } = await props.params;
+    const { id } = await props.params; // Await params
     const response = await apiClient.get<MovieDetails>(`/movie/${id}`, {
       params: { append_to_response: "credits" },
     });
