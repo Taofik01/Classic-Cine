@@ -5,6 +5,11 @@ import MovieCard from '@/components/MovieCard';
 import apiClient from '@/utils/apiClient';
 import { Movie } from '@/types/types';
 import Navbar from '@/components/Navbar';
+import {useAuthState} from 'react-firebase-hooks/auth';
+import { auth } from '@/app/firebase/config';
+// import { useRouter } from 'next/navigation';
+import ProtectedRoute from '@/utils/ProtectedRoute';
+
 
 interface ApiMovie {
   id: number;
@@ -24,7 +29,16 @@ export default function HomePage() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  
+  const [ user ] = useAuthState(auth);
 
+ 
+
+ 
+
+
+  
+  // console.log('User:', user);
   useEffect(() => {
     const fetchMovies = async () => {
       setIsLoading(true);
@@ -91,11 +105,18 @@ export default function HomePage() {
 
   return (
     <div>
+      
       <Navbar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+      <ProtectedRoute>
       <main className="container mx-auto p-6">
         <h1 className="text-3xl font-bold mb-6">
           {searchTerm ? `Search Results for "${searchTerm}"` : 'Popular Movies'}
         </h1>
+        {
+        // display username with a greeting with design and animation 
+        <div className=''>Welcome {user?.displayName}!</div>
+        }
+        
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-6">
           {filteredMovies.map((movie, index) => (
             <MovieCard
@@ -113,6 +134,7 @@ export default function HomePage() {
         )}
         <div ref={loadMoreRef} />
       </main>
+      </ProtectedRoute>
     </div>
   );
 }

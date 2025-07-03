@@ -1,8 +1,11 @@
+
 import { Metadata } from "next";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import apiClient from "@/utils/apiClient";
 import Navbar from "@/components/Navbar";
+
+
 
 // Type Definitions remain the same
 interface Genre {
@@ -37,6 +40,8 @@ type Props = {
 
 // Modified API Function
 async function fetchMovieDetails(id: string): Promise<MovieDetails> {
+  
+
   if (!process.env.NEXT_PUBLIC_TMDB_API_KEY) {
     throw new Error('API key is not configured');
   }
@@ -81,6 +86,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // Modified Page Component
 export default async function MovieDetailsPage({ params }: Props) {
+  
+  // let showMessage = false;
   let movie: MovieDetails;
   
   try {
@@ -88,6 +95,15 @@ export default async function MovieDetailsPage({ params }: Props) {
   } catch {
     notFound();
   }
+
+  // const handleDownloadClick = (movie: MovieDetails) => {
+  //   showMessage = true;
+  //   // Simulate showing a message for 3 seconds
+  //   setTimeout(() => showMessage = false, 3000);
+    
+  //   // Placeholder for download functionality
+  //   console.log(`Download clicked for movie: ${movie.title}`);
+  // }
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -122,6 +138,13 @@ export default async function MovieDetailsPage({ params }: Props) {
               <p className="text-gray-300 leading-relaxed">
                 {movie.overview || "No overview available."}
               </p>
+              <a  target="_blank" rel="noopener noreferrer" className="fixed absolute right-4 m-4 animate-pulse" >
+                <button 
+                  className="mt-4 px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition" disabled
+                  // onClick={() => handleDownloadClick(movie) }
+
+                  >Download {movie.title}</button>
+              </a>
             </section>
 
             {/* Additional Info */}
@@ -180,6 +203,24 @@ export default async function MovieDetailsPage({ params }: Props) {
             )}
           </div>
         </div>
+        {/* { showMessage && (
+            <div className="fixed top-4 right-4 bg-slate-800 border border-slate-600 rounded-xl p-4 shadow-2xl animate-pulse z-50">
+              <div className="flex items-center gap-3">
+                <div className="bg-amber-500/20 p-2 rounded-lg">
+                  <Image
+                    src="/images/download-icon.png"
+                    alt="Download Icon"
+                    width={24}
+                    height={24}
+                  />
+                </div>
+                <div>
+                  <p className="text-white font-medium">Movie Download</p>
+                  <p className="text-slate-400 text-sm">This functionality is coming soon!</p>
+                </div>
+              </div>
+            </div>
+          )  } */}
       </main>
     </div>
   );
