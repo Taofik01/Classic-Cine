@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Eye, EyeOff, Mail, Lock, Github, Film, User  } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, Github, User  } from 'lucide-react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup, GithubAuthProvider } from 'firebase/auth';
@@ -9,6 +9,7 @@ import {auth } from '@/app/firebase/config';
 import { toast } from 'react-toastify';
 import { setPersistence, browserLocalPersistence } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 interface FormData {
   email: string;
@@ -191,9 +192,9 @@ export default function SignUpPage(): JSX.Element {
           {/* Logo/Header */}
           <div className="text-center mb-8">
             <Link href="/" className="inline-block">
-              <div className="flex items-center justify-center mb-4">
+              <div className="flex items-center justify-center mb-3">
                 <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-3 rounded-xl hover:scale-105 transition-transform duration-200">
-                  <Film className="w-8 h-8 text-white" />
+                  <Image src="/images/logo.png"  width={500} height={500} alt='Logo' className="w-10 h-10 text-white" />
                 </div>
               </div>
             </Link>
