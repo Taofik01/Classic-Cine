@@ -86,23 +86,25 @@ export default function SignInPage(): JSX.Element {
     setIsLoading(true);
     try {
       await setPersistence(auth, browserLocalPersistence);
-       const userCred =  signInWithEmailAndPassword(
+      const userCred = await signInWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-      console.log('User credentials:', userCred);
 
-      // if (!result) throw new Error("Login failed");
+      if (!userCred) {
+        throw new Error('Login failed');
+      }
 
       notify();
       await new Promise(resolve => setTimeout(resolve, 1000));
-
-     
       router.push('/');
     } catch (error) {
       console.error('Sign in error:', error);
       setErrors({ email: 'Invalid email or password' });
+      toast.error('Invalid email or password', {
+        autoClose: 3000,
+      });
     } finally {
       setIsLoading(false);
       setFormData({

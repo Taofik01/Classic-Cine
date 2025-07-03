@@ -122,6 +122,18 @@ export default function SignUpPage(): JSX.Element {
         router.push('/');
       } catch (e) {
         console.error('Sign up error:', e);
+        if (e instanceof Error) {
+          if (e.message.includes('email-already-in-use')) {
+            setErrors({ email: 'Email is already in use' });
+            toast.error('Email is already in use', { autoClose: 3000 });
+          } else if (e.message.includes('weak-password')) {
+            setErrors({ password: 'Password is too weak' });
+            toast.error('Password is too weak', { autoClose: 3000 });
+          } else {
+            setErrors({ email: 'An error occurred, please try again later' });
+            toast.error('An error occurred, please try again later', { autoClose: 3000 });
+          }
+        }
         // Handle error (show toast, etc.)
       } finally {
         setIsLoading(false);
