@@ -49,3 +49,5 @@ export default function MovieCard({ movie, onToggleFavorite, isFavorite }: Movie
     </div>
   );
 }
+
+// just tired man
